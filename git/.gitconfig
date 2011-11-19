@@ -10,7 +10,7 @@
     ci=commit
     br=branch
     di=diff
-    ds=diff --staged
+    ds=diff --cached
     st=status --short -b
     h=help
     fix=commit --amend -C HEAD
