@@ -1,5 +1,9 @@
 [ -z "$PS1" ] && return
 
+
+DOTFILES_ROOT="$(cd "$( dirname "$( readlink "${BASH_SOURCE[0]}" )" )/.." && pwd)"
+
+alias reload='source ~/.bash_profile'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
@@ -51,5 +55,14 @@ function set_prompt()
 }
 
 PROMPT_COMMAND='set_prompt'
+
+function update_dotfiles()
+{
+    cwd=`pwd`
+    cd "$DOTFILES_ROOT"
+    git pull
+    cd "$cwd"
+    reload
+}
 
 [ -r /etc/bash_completion ] && . /etc/bash_completion
