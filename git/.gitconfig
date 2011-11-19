@@ -1,0 +1,16 @@
+[user]
+    name = Vasiliy Stepanets
+    email = lanior@gmail.com
+[core]
+    excludesfile = ~/.gitignore.global
+[color]
+    ui = true
+[alias]
+    ap=add -p
+    ci=commit
+    br=branch
+    di=diff
+    ds=diff --staged
+    st=status --short -b
+    h=help
+    fix=commit --amend -C HEAD
