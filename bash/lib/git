@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function parse_git_status()
+{
+    unset git_branch git_ref git_detached git_status git_ahead_by git_behind_by
+    unset git_merge_head
+    git_dir=$(git rev-parse --git-dir 2>/dev/null)
+    eval "$(
+        git status 2>/dev/null | sed -n '
+            s/^# On branch \(.*\)/git_branch="\1"/p
+            s/^# Your branch is ahead of .* by \([[:digit:]]*\) commit.*/git_ahead_by="\1"/p
+            s/^# Your branch is behind .* by \([[:digit:]]*\) commit.*/git_behind_by="\1"/p
+            s/^# and have \([[:digit:]]*\) and \([[:digit:]]*\) .*/git_ahead_by="\1"; git_behind_by="\2"/p
+        '
+    )"
+
+    git_ref="$git_branch"
+    if [ -d "$git_dir/rebase-merge" ]; then
+        git_status="rebase"
+        if [ -f "$git_dir/rebase-merge/interactive" ]; then
+            git_status+=" -i"
+        fi
+    elif [ -f "$git_dir/MERGE_HEAD" ]; then
+        git_status="merge"
+        git_merge_head="$(git name-rev --name-only $(<$git_dir/MERGE_HEAD))"
+    fi
+
+    if grep -vq 'ref:' "$git_dir/HEAD" 2>/dev/null; then
+        git_ref="$(git name-rev --name-only HEAD 2>/dev/null)"
+        git_detached="detached"
+    fi
+}
+
+function git_prompt()
+{
+    parse_git_status
+    [ -z "$git_dir" ] && return;
+
+    echo -n " $bold_blue("
+    if [ -n "$git_status" ]; then
+        echo -n "$green$git_status:"
+    fi
+
+    if [ -n "$git_detached" ]; then
+        echo -n "${magenta}detached:$blue"
+    fi
+    echo -n "$blue$git_ref"
+    if [ "$git_status" == "merge" ]; then
+        echo -n "$yellow<$magenta$git_merge_head"
+    fi
+
+    if [ -n "$git_ahead_by" ]; then
+        echo -n "$green+$git_ahead_by"
+    fi
+    if [ -n "$git_behind_by" ]; then
+        echo -n "$yellow-$git_behind_by"
+    fi
+
+    echo -n "$bold_blue)$white"
+}

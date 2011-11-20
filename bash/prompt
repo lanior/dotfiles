@@ -35,7 +35,7 @@ function prompt_end()
 function set_prompt()
 {
     exit_code="$?"
-    PS1="$(prompt_user)$(prompt_hostname) $(prompt_path)$(prompt_end $exit_code)"
+    PS1="$(prompt_user)$(prompt_hostname) $(prompt_path)$(git_prompt)$(prompt_end $exit_code)"
 }
 
 PROMPT_COMMAND='set_prompt'
