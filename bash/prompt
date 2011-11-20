@@ -28,9 +28,6 @@ function prompt_end()
         echo -n $bold_green
     else
         echo -n $red
-        if [ "$1" != "1" ]; then
-            echo -n "!$1"
-        fi
     fi
     echo -n ">$white "
 }
