@@ -22,6 +22,7 @@ set output-meta on
 "\e\e[D": backward-word
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
+"\e[3;5~": kill-word
 
 $if Bash
   # do history expansion when space entered
