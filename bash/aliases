@@ -1,0 +1,6 @@
+#!/bin/bash
+
+alias reload='source ~/.bash_profile'
+alias update_dotfiles='pushd "$DOTFILES_DIR">/dev/null; git pull; popd>/dev/null; reload'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'

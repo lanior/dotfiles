@@ -1,0 +1,7 @@
+#!/bin/bash
+
+colors=(black red green yellow blue magenta cyan white)
+for i in $(seq 0 7); do
+    eval "${colors[i]}=\"\[`tput sgr0; tput setaf $i`\]\""
+    eval "bold_${colors[i]}=\"\[`tput setaf $i; tput bold`\]\""
+done;
