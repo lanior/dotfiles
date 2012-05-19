@@ -1,3 +1,6 @@
-*.pyc
 .project
 .cproject
+*.pyc
+*.pyo
+*.sublime-project
+*.sublime-workspace
