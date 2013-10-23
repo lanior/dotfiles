@@ -2,40 +2,56 @@
 
 function prompt_user()
 {
-    if [ $(id -u) != 0 ]; then
-        echo -n "$yellow$(whoami)@"
-    fi
+    echo -n "$green$(whoami)@"
 }
 
 function prompt_hostname()
 {
-    if [ `hostname` == 'limbo' ]; then
-        hostname_color=$magenta
-    else
-        hostname_color=$green
-    fi
+    hostname_color=$blue
     echo -n "${hostname_color}$(hostname)"
 }
 
 function prompt_path()
 {
-    echo -n "$white${PWD/#$HOME/~}"
+    echo -n "${yellow}${PWD/#$HOME/~}"
 }
 
 function prompt_end()
 {
     if [ "$1" == "0" ]; then
-        echo -n $bold_green
+        echo -n $white
     else
         echo -n $red
     fi
-    echo -n ">$white "
+    echo -n "\$"
 }
+
+function nstime()
+{
+    date +%s%N
+}
+
+function timer_start
+{
+    if [ -z "$timer" ]; then
+        timer=$(nstime)
+    fi
+}
+
+function timer_stop
+{
+    timer_show=$(echo "scale=3; ($(nstime) - $timer) / 1000000000" | bc -l | xargs printf "%.3f" | sed 's/,/./')
+    unset timer
+}
+
+trap timer_start DEBUG
 
 function set_prompt()
 {
     exit_code="$?"
-    PS1="$(prompt_user)$(prompt_hostname) $(prompt_path)$(git_prompt)$(prompt_end $exit_code)"
+    timer_stop
+    PS1="$(prompt_user)$(prompt_hostname) [last: ${timer_show}s] $(prompt_path)$(git_prompt)\n$(prompt_end $exit_code) $white"
 }
 
 PROMPT_COMMAND='set_prompt'
+PS2='    '
